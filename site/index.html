@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aperture — Internal Test</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+          "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Aperture</h1>
+        <p class="lede">
+          A v0 test of phone-captured 3D Gaussian Splats. Two rooms, captured
+          on iPhone with Scaniverse, rendered in-page with a custom WebGL
+          viewer (Spark + Three.js). Drag to rotate, scroll/pinch to zoom.
+        </p>
+      </header>
+
+      <section class="scene">
+        <h2>Scan #1 — West Oak Hill</h2>
+        <div
+          class="viewer"
+          data-splat="scans/scan1.spz"
+          data-poster="scans/scan1-preview.jpg"
+          data-center-x="0.024079919"
+          data-center-y="-0.5108332"
+          data-center-z="-1.7559862"
+          data-radius="1.8683064"
+          data-radius-min="0.1"
+          data-radius-max="2.8024597"
+          data-pitch="-0.36302692"
+          data-yaw="0.24435559"
+        >
+          <div class="viewer-status">Loading splat… 6.4 MB</div>
+          <div class="viewer-hint">
+            Drag to orbit · right-drag to pan · scroll to zoom
+          </div>
+        </div>
+        <p class="caption">
+          <span class="meta"
+            >Captured: Fri 2026-05-22 · Scaniverse Classic · 294K gaussians ·
+            48.4 MB raw / 6.4 MB SPZ</span
+          >
+          <span class="verdict"
+            ><!-- one-line quality verdict goes here --></span
+          >
+        </p>
+      </section>
+
+      <section class="scene">
+        <h2>Scan #2 — pending</h2>
+        <div class="viewer placeholder">
+          <div class="viewer-status">
+            Awaiting second Scaniverse upload. Share URL → wire into
+            <code>scans/scan2.spz</code>.
+          </div>
+        </div>
+        <p class="caption">
+          <span class="meta">Not captured yet</span>
+        </p>
+      </section>
+
+      <footer>
+        <h3>Notes</h3>
+        <ul>
+          <li>What Scaniverse got right: <!-- fill in after walkthrough --></li>
+          <li>What Scaniverse got wrong: <!-- floaters? holes? mirrors? --></li>
+          <li>
+            Renderer: <a href="https://github.com/sparkjsdev/spark">Spark</a> on
+            <a href="https://threejs.org">Three.js</a>, .spz files served
+            locally (Scaniverse CDN blocks cross-origin fetches).
+          </li>
+          <li>Next step: <!-- continue to self-hosted INRIA path, or stop --></li>
+        </ul>
+      </footer>
+    </main>
+
+    <script type="module" src="viewer.js"></script>
+  </body>
+</html>
