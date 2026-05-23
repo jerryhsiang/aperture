@@ -1,6 +1,6 @@
 # Aperture
 
-Weekend test of phone-captured 3D Gaussian Splats wrapped in a custom WebGL viewer. Two captures, zero infra cost, ~zero deps. The goal isn't a business — it's enough hands-on with 3DGS to decide whether the workflow is worth pursuing downstream (robotics training data, listings, AEC, insurance).
+Weekend test of a phone-captured 3D Gaussian Splat wrapped in a custom WebGL viewer. Zero infra cost, ~zero deps. The goal isn't a business — it's enough hands-on with 3DGS to decide whether the workflow is worth pursuing downstream (robotics training data, listings, AEC, insurance).
 
 **Live:** https://site-ten-xi-60.vercel.app
 
@@ -41,8 +41,9 @@ Or via the included `.claude/launch.json`: just run `mcp__Claude_Preview__previe
 
    ```bash
    ID="<scan_id>"
-   curl -o "site/scans/scan2.spz"        "https://scaniverse.com/api/media/$ID/gaussians.spz"
-   curl -o "site/scans/scan2-preview.jpg" "https://scaniverse.com/api/media/$ID/preview.jpg"
+   N="<scan_number>"  # e.g. 2
+   curl -o "site/scans/scan$N.spz"         "https://scaniverse.com/api/media/$ID/gaussians.spz"
+   curl -o "site/scans/scan$N-preview.jpg" "https://scaniverse.com/api/media/$ID/preview.jpg"
 
    # Grab the starting camera so the viewer matches Scaniverse's:
    curl -s "https://scaniverse.com/scan/$ID" | python3 -c "
@@ -50,7 +51,7 @@ Or via the included `.claude/launch.json`: just run `mcp__Claude_Preview__previe
    m = re.search(r'\"metadata\":(.+?)\}\}', sys.stdin.read(), re.DOTALL)
    print(m.group(1)[:600] if m else 'no match')"
    ```
-4. In `site/index.html`, swap the "pending" placeholder section for a real one. Copy the `data-*` attributes from scan #1 and replace `center-x/y/z`, `radius`, `radius-max`, `pitch`, `yaw` with the values from the metadata above.
+4. In `site/index.html`, add a new `<section class="scene">` mirroring scan #1. Copy the `data-*` attributes and replace `center-x/y/z`, `radius`, `radius-max`, `pitch`, `yaw` with the values from the metadata above.
 
 ## Deploy
 
@@ -73,6 +74,5 @@ Full play-by-play in [`SUMMARY.md`](./SUMMARY.md).
 
 ## Status
 
-- ✅ Scan #1 captured + rendering on the live site
-- ⏳ Scan #2 — pending
+- ✅ Scan #1 captured + rendering on the live site with WASD walk-through
 - ⏳ Sunday self-hosted INRIA training (from `plan.md`)

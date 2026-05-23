@@ -6,8 +6,8 @@ A weekend-scale test of phone-captured 3D Gaussian Splats wrapped in a custom We
 
 - ✅ Scan #1 captured (Scaniverse, 294K gaussians, 6.4 MB SPZ)
 - ✅ Custom viewer rendering scan in-page (Spark + Three.js, WASD walk-through)
-- ⏳ Scan #2 — pending
-- ⏳ Vercel deploy — pending
+- ✅ Deployed to Vercel: https://site-ten-xi-60.vercel.app
+- ⏳ Additional scans — TBD
 
 ## Stack (what shipped)
 
@@ -45,10 +45,9 @@ Aperture/
     scans/
       scan1.spz            # 6.4 MB — West Oak Hill capture, 294K gaussians
       scan1-preview.jpg    # 53 KB — Scaniverse-generated thumbnail
-      # scan2.spz          # TBD — second room
 ```
 
-## Workflow to add the next scan
+## Workflow to add a scan
 
 1. Open Scaniverse app → Classic → tap capture → Splat mode.
 2. Walk the room (60–90s, three height passes, heavy overlap, avoid mirrors).
@@ -56,10 +55,12 @@ Aperture/
 4. Tap **Share → Upload to Scaniverse** → copy the `scaniverse.com/scan/<id>` URL.
 5. Send the URL back here. The wiring step is:
    ```bash
-   curl -o "site/scans/scan2.spz" "https://scaniverse.com/api/media/<id>/gaussians.spz"
-   curl -o "site/scans/scan2-preview.jpg" "https://scaniverse.com/api/media/<id>/preview.jpg"
+   N=2  # next free scan number
+   ID=<scan_id>
+   curl -o "site/scans/scan$N.spz"         "https://scaniverse.com/api/media/$ID/gaussians.spz"
+   curl -o "site/scans/scan$N-preview.jpg" "https://scaniverse.com/api/media/$ID/preview.jpg"
    ```
-   Then update `index.html` — flip the placeholder section to use `data-splat="scans/scan2.spz"`.
+   Then update `index.html` — add a new `<section class="scene">` block mirroring scan #1 with `data-splat="scans/scan$N.spz"` and the metadata-derived `data-*` camera attributes.
 
 ## Sunday 8pm checkpoint — Learning Objectives (from `plan.md`)
 

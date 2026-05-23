@@ -13,6 +13,8 @@ Static deployable site that loads `.spz` Gaussian Splat files and renders them i
 | `scans/scan1.spz` | Scan #1 — West Oak Hill living room (6.4 MB, 294K gaussians). |
 | `scans/scan1-preview.jpg` | Scaniverse-generated preview thumbnail. |
 
+Additional scans (scan2, scan3, …) are added the same way — see [Adding a scan](#adding-a-scan) below.
+
 ## How the viewer is set up
 
 Each `<div class="viewer">` declares a Scaniverse-supplied starting camera via `data-*` attributes:
@@ -62,12 +64,13 @@ The condensed version:
 3. Download SPZ + grab metadata:
    ```bash
    ID="<scan_id>"
-   curl -o "scans/scan2.spz"        "https://scaniverse.com/api/media/$ID/gaussians.spz"
-   curl -o "scans/scan2-preview.jpg" "https://scaniverse.com/api/media/$ID/preview.jpg"
+   N="<scan_number>"  # next free number, e.g. 2
+   curl -o "scans/scan$N.spz"         "https://scaniverse.com/api/media/$ID/gaussians.spz"
+   curl -o "scans/scan$N-preview.jpg" "https://scaniverse.com/api/media/$ID/preview.jpg"
    curl -s "https://scaniverse.com/scan/$ID" \
      | python3 -c "import sys,re; m=re.search(r'\"metadata\":(.+?)\\}\\}', sys.stdin.read(), re.DOTALL); print(m.group(1)[:600])"
    ```
-4. In `index.html`: replace the `Scan #2 — pending` placeholder with a viewer block using the scan's metadata.
+4. In `index.html`: add a new `<section class="scene">` mirroring scan #1 and fill the `data-*` attributes from the metadata.
 
 ## Why a custom viewer (not just Scaniverse's iframe)?
 

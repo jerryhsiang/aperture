@@ -77,16 +77,6 @@ h2 {
   display: block;
 }
 
-.viewer.placeholder {
-  background: repeating-linear-gradient(
-    45deg,
-    #0b0b0c,
-    #0b0b0c 12px,
-    #111114 12px,
-    #111114 24px
-  );
-}
-
 .viewer-status {
   position: absolute;
   inset: 0;
