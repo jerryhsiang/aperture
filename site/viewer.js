@@ -85,10 +85,61 @@ function initViewer(container) {
   // frame Spark loads .spz into, so no rotation/translation needed.
   scene.add(splat);
 
-  // Focus canvas for keyboard events if added later.
+  // Focus canvas so keyboard events reach this viewer (not the page).
   renderer.domElement.addEventListener("pointerdown", () => {
     renderer.domElement.focus();
   });
+
+  // WASD walking — move BOTH the camera and the orbit target by the same
+  // world-space vector so the look-direction is preserved while you translate.
+  // Q/E = down/up. Movement speed scales with scene radius so a small room
+  // (1.87m here) moves at the same perceived pace as a larger scan.
+  const keys = new Set();
+  const onKey = (e) => {
+    if (document.activeElement !== renderer.domElement) return;
+    const k = e.key.toLowerCase();
+    if (!"wasdqe".includes(k) && k !== " ") return;
+    e.preventDefault();
+    if (e.type === "keydown") keys.add(k);
+    else keys.delete(k);
+  };
+  renderer.domElement.addEventListener("keydown", onKey);
+  renderer.domElement.addEventListener("keyup", onKey);
+
+  const moveSpeed = Math.max(0.4, radius * 0.5); // units per second
+  const fwd = new THREE.Vector3();
+  const right = new THREE.Vector3();
+  const up = new THREE.Vector3(0, 1, 0);
+  const step = new THREE.Vector3();
+  let lastTime = performance.now();
+
+  function applyWalk() {
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    if (keys.size === 0) return;
+
+    // Forward = direction camera looks (target - position), flattened to XZ
+    // so W/S walk along the ground rather than tilting up/down.
+    fwd.subVectors(controls.target, camera.position);
+    fwd.y = 0;
+    if (fwd.lengthSq() < 1e-8) return;
+    fwd.normalize();
+    right.crossVectors(fwd, up).normalize();
+
+    step.set(0, 0, 0);
+    if (keys.has("w")) step.addScaledVector(fwd, 1);
+    if (keys.has("s")) step.addScaledVector(fwd, -1);
+    if (keys.has("d")) step.addScaledVector(right, 1);
+    if (keys.has("a")) step.addScaledVector(right, -1);
+    if (keys.has("e") || keys.has(" ")) step.y += 1;
+    if (keys.has("q")) step.y -= 1;
+    if (step.lengthSq() === 0) return;
+
+    step.normalize().multiplyScalar(moveSpeed * dt);
+    camera.position.add(step);
+    controls.target.add(step);
+  }
 
   // Resize
   const ro = new ResizeObserver(() => {
@@ -113,6 +164,7 @@ function initViewer(container) {
 
   renderer.setAnimationLoop(() => {
     if (!visible) return;
+    applyWalk();
     controls.update();
     renderer.render(scene, camera);
   });
